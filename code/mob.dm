@@ -553,7 +553,7 @@
 					tmob.throw_at(get_edge_cheap(source, get_dir(src, tmob)),  20, 3)
 					src.throw_at(get_edge_cheap(source, get_dir(tmob, src)),  20, 3)
 					return
-			if(tmob.reagents.get_reagent_amount("flubber") + src.reagents.get_reagent_amount("flubber") > 0)
+			if(tmob.reagents && tmob.reagents.get_reagent_amount("flubber") + src.reagents.get_reagent_amount("flubber") > 0)
 				if(src.next_spammable_chem_reaction_time > world.time || tmob.next_spammable_chem_reaction_time > world.time)
 					src.now_pushing = 0
 					return
@@ -2843,9 +2843,15 @@
 	.=0
 
 /mob/verb/pull_verb(atom/movable/A as mob|obj in view(1))
-	set name = "Pull"
+	set name = "Pull / Unpull"
 	set category = "Local"
-	A.pull()
+
+	if (src.pulling && src.pulling == A)
+		unpull_particle(src,src.pulling)
+		src.set_pulling(null)
+	else
+		A.pull()
+
 
 /mob/verb/examine_verb(atom/A as mob|obj|turf in view())
 	set name = "Examine"
